@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+        integrity="sha512-iecdLmaskl7CVkqkXNQ/ZH/XLlvWZOJyj7Yy7tcenmpD1ypASozpmT/E0iPtmFIB46ZmdtAc9eNBvH0H/ZpiBw=="
+        crossorigin="anonymous" referrerpolicy="no-referrer" />
+</head>
+
+<body>
+    <input type="text" id="to">
+    <button id="add">click me</button>
+    <button id="update">click em</button>
+    <button id="delete">delete</button>
+    <ul id="ul"></ul>
+
+    <script type="module">
+
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.1.0/firebase-app.js";
+        import { getFirestore, collection, addDoc, doc, updateDoc, deleteDoc, onSnapshot, getDoc } from "https://www.gstatic.com/firebasejs/10.1.0/firebase-firestore.js";
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyDnIr_2TxM-RXRyEffEsVNZhWUVjHmb2P0",
+            authDomain: "login-6f370.firebaseapp.com",
+            projectId: "login-6f370",
+            storageBucket: "login-6f370.appspot.com",
+            messagingSenderId: "969560496903",
+            appId: "1:969560496903:web:8de568c8e440edbf20c3a2"
+        };
+
+        const app = initializeApp(firebaseConfig);
+
+        const db = getFirestore(app);
+
+        document.getElementById('add').addEventListener("click", () => {
+            var to = document.getElementById('to')
+            const dbRef = collection(db, "users");
+            const data = {
+                name: to.value,
+                country: "bengali"
+            };
+            to.value = ""
+            addDoc(dbRef, data)
+                .then(docRef => {
+                    console.log("Document has been added successfully " + docRef.id);
+                })
+                .catch(error => {
+                    console.log(error);
+                })
+        })
+
+        document.getElementById('update').addEventListener("click", () => {
+
+            const docRef = doc(db, "users", "g2pIJtDX5okkKaDeLyZT");
+            const data = {
+                name: "613"
+            };
+            updateDoc(docRef, data)
+                .then(docRef => {
+                    console.log("A New Document Field has been added to an existing document");
+                })
+                .catch(error => {
+                    console.log(error);
+                })
+        })
+
+        document.getElementById('delete').addEventListener("click", () => {
+            const docRef = doc(db, "users", "onrJoXy119HP0e6Clc11");
+
+            deleteDoc(docRef)
+                .then(() => {
+                    console.log("Entire Document has been deleted successfully.")
+                })
+                .catch(error => {
+                    console.log(error);
+                })
+        })
+
+        const dbRef = collection(db, "users");
+        var ul = document.getElementById('ul')
+        onSnapshot(dbRef, docsSnap => {
+            docsSnap.forEach(doc => {
+                ul.innerHTML += `
+                <li>
+                        <p>${doc.data().name}</p>
+                        <i class='fas fa-edit' onclick='uptodo("${doc.id}")'></i>
+                        <i class='fa-solid fa-trash' onclick='deltodo("${doc.id}")'></i>
+                    </li>
+                `;
+            })
+        });
+
+        // const docRef = doc(db, "users", "xULD3AXUElzicGGwYfUg");
+        // const docSnap = await getDoc(docRef);
+        // docSnap.data();
+        // try {
+        //     const docSnap = await getDoc(docRef);
+        //     if (docSnap.exists()) {
+        //         console.log(docSnap.data());
+        //     } else {
+        //         console.log("Document does not exist")
+        //     }
+
+        // } catch (error) {
+        //     console.log(error)
+        // }
+    </script>
+</body>
+
+</html>
